@@ -1,6 +1,4 @@
-package org.petmeet.db.entities.member;
-
-import org.petmeet.db.repositories.MemberRepository;
+package org.petmeet.db.domain.entities.member;
 
 import jakarta.persistence.Embeddable;
 import lombok.Builder;

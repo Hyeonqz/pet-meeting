@@ -1,4 +1,4 @@
-package org.petmeet.db.enums;
+package org.petmeet.db.domain.enums;
 
 import java.util.Arrays;
 

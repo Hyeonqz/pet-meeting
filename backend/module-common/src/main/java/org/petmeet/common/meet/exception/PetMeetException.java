@@ -1,4 +1,4 @@
-package org.petmeet.common.exception;
+package org.petmeet.common.meet.exception;
 
 public class PetMeetException extends RuntimeException{
 

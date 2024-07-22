@@ -1,18 +1,13 @@
-package org.petmeet.db.entities.member;
+package org.petmeet.db.domain.entities.member;
 
 import java.time.LocalDateTime;
 
-import org.petmeet.db.entities.login.LoginEntity;
-import org.petmeet.db.enums.Role;
-import org.springframework.cglib.core.Local;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.petmeet.db.domain.entities.login.LoginEntity;
+import org.petmeet.db.domain.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -71,9 +66,13 @@ public class MemberEntity {
 		createdAt = LocalDateTime.now();
 	}
 
-	public void setRole() {
-		this.role = Role.USER;
+	public MemberEntity (Role role, LoginEntity login) {
+		this.role = role;
+		this.login = login;
 	}
 
 
+	public void setRole() {
+		this.role = Role.USER;
+	}
 }

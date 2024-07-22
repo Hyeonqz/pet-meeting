@@ -1,6 +1,6 @@
 package org.petmeet.api.config;
 
-import org.petmeet.db.entities.jwt.RefreshToken;
+import org.petmeet.db.domain.entities.jwt.RefreshToken;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

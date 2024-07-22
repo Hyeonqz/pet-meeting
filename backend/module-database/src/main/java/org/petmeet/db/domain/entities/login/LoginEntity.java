@@ -1,8 +1,8 @@
-package org.petmeet.db.entities.login;
+package org.petmeet.db.domain.entities.login;
 
 import java.time.LocalDateTime;
 
-import org.petmeet.db.entities.member.MemberEntity;
+import org.petmeet.db.domain.entities.member.MemberEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

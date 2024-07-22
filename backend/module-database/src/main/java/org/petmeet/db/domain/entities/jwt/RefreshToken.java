@@ -1,4 +1,6 @@
-package org.petmeet.db.entities.jwt;
+package org.petmeet.db.domain.entities.jwt;
+
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -13,8 +15,15 @@ public class RefreshToken {
 	@Id
 	private String refreshToken;
 	private String username;
-	private String expiredAt;
+	private Date expiredAt;
 
 	@TimeToLive
 	private Long timeToLive;
+
+	public RefreshToken (String refreshToken, String username, Date expiredAt) {
+		this.refreshToken = refreshToken;
+		this.username = username;
+		this.expiredAt = expiredAt;
+	}
+
 }

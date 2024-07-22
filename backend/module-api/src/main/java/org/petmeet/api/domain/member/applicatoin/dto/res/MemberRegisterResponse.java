@@ -3,8 +3,8 @@ package org.petmeet.api.domain.member.applicatoin.dto.res;
 import java.time.LocalDateTime;
 
 import org.petmeet.api.domain.login.application.dto.LoginDTO;
-import org.petmeet.db.entities.member.Address;
-import org.petmeet.db.enums.Role;
+import org.petmeet.db.domain.entities.member.Address;
+import org.petmeet.db.domain.enums.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

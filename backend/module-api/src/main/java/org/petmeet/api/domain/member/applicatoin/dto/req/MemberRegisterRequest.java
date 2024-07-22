@@ -1,11 +1,9 @@
 package org.petmeet.api.domain.member.applicatoin.dto.req;
 
 import org.petmeet.api.domain.login.application.dto.LoginDTO;
-import org.petmeet.db.entities.login.LoginEntity;
-import org.petmeet.db.entities.member.Address;
-import org.petmeet.db.entities.member.MemberEntity;
+import org.petmeet.db.domain.entities.member.Address;
+import org.petmeet.db.domain.entities.member.MemberEntity;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

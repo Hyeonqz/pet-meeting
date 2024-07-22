@@ -1,19 +1,15 @@
 package org.petmeet.api.domain.member.ui;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.petmeet.api.domain.member.applicatoin.service.MemberRegisterService;
-import org.petmeet.db.entities.login.LoginEntity;
-import org.petmeet.db.entities.member.Address;
-import org.petmeet.db.entities.member.MemberEntity;
-import org.petmeet.db.enums.Role;
-import org.petmeet.db.repositories.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.petmeet.db.domain.entities.login.LoginEntity;
+import org.petmeet.db.domain.entities.member.Address;
+import org.petmeet.db.domain.entities.member.MemberEntity;
+import org.petmeet.db.domain.enums.Role;
+import org.petmeet.db.domain.repositories.MemberRepository;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest

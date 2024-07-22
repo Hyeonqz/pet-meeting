@@ -1,4 +1,4 @@
-package org.petmeet.common.exception;
+package org.petmeet.common.meet.exception;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;

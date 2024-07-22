@@ -1,5 +1,2 @@
 rootProject.name = 'backend'
-include 'module-api'
-include 'module-common'
-include 'module-database'
-
+include 'module-api', 'module-common', 'module-database'

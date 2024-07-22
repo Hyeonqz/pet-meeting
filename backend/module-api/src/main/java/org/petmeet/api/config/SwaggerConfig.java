@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.info.Info;
 
 @Configuration
 public class SwaggerConfig {
+
 	@Bean
 	public ModelResolver modelResolver(ObjectMapper objectMapper){
 		return new ModelResolver(objectMapper);
