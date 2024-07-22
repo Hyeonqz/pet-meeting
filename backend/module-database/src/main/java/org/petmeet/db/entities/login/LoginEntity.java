@@ -70,7 +70,7 @@ public class LoginEntity {
 
 	@PrePersist
 	protected void onCreate() {
-		lastUpdateTime = LocalDateTime.now();
+		lastLoginTime = LocalDateTime.now();
 	}
 
 }
