@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.petmeet.api.domain.member.applicatoin.service.MemberRegisterService;
-import org.petmeet.db.domain.entities.login.LoginEntity;
-import org.petmeet.db.domain.entities.member.Address;
-import org.petmeet.db.domain.entities.member.MemberEntity;
-import org.petmeet.db.domain.enums.Role;
-import org.petmeet.db.domain.repositories.MemberRepository;
+import org.petmeet.http.db.login.LoginEntity;
+import org.petmeet.http.db.member.Address;
+import org.petmeet.http.db.member.MemberEntity;
+import org.petmeet.http.db.member.Role;
+import org.petmeet.http.db.member.MemberRepository;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
