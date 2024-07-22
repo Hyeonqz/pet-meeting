@@ -9,11 +9,24 @@ java {
     sourceCompatibility = '21'
 }
 
+bootJar {
+    enabled = true
+}
+
 repositories {
     mavenCentral()
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 dependencies {
+    implementation project(':module-database')
+    implementation project(':module-common')
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
@@ -24,7 +37,6 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
