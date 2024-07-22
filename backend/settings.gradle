@@ -1,0 +1,5 @@
+rootProject.name = 'backend'
+include 'module-api'
+include 'module-common'
+include 'module-database'
+
