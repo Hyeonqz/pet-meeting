@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class JwtUtils {
 
-	private SecretKey secretKey;
+	private final SecretKey secretKey;
 
 	public JwtUtils (@Value("${spring.jwt.secret.key}") String secretKey) {
 		this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
@@ -39,7 +40,6 @@ public class JwtUtils {
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
 	}
 
-	// header 에 refresh token 을 cookie 에 저장
 	public Cookie createCookie (String key, String value) {
 		Cookie cookie = new Cookie(key,value);
 		cookie.setMaxAge(24*60*60);
@@ -49,7 +49,6 @@ public class JwtUtils {
 		return cookie;
 	}
 
-	// jwt 생성(refresh + access 둘다 생성 가능)
 	public String createToken(String category, String username, String role, Long expiredAt) {
 		long now = System.currentTimeMillis();
 		long expirationTime = now + expiredAt * 2000;
@@ -62,5 +61,23 @@ public class JwtUtils {
 			.expiration(new Date(expirationTime))
 			.signWith(secretKey)
 			.compact();
+	}
+
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parser().setSigningKey(secretKey).build().parseSignedClaims(token);
+			log.info("JWT Request: {}", Jwts.parser().setSigningKey(secretKey).build().parseSignedClaims(token));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public String resolveToken(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
+		return null;
 	}
 }

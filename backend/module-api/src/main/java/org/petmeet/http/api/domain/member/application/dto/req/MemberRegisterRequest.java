@@ -20,9 +20,6 @@ public class MemberRegisterRequest {
 	private LoginDTO login;
 
 	public static MemberEntity toEntity(MemberRegisterRequest request) {
-
-		//LoginEntity login = LoginDTO.toEntity(request.getLogin());
-
 		return MemberEntity.builder()
 			//.login(login)
 			.address(request.getAddress())
@@ -32,5 +29,7 @@ public class MemberRegisterRequest {
 			.phoneNumber(request.getPhoneNumber())
 			.build();
 	}
+
+
 
 }

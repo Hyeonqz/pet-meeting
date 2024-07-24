@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.petmeet.api.domain.member.applicatoin.service.MemberRegisterService;
+import org.petmeet.http.api.domain.member.application.service.MemberRegisterService;
 import org.petmeet.http.db.login.LoginEntity;
 import org.petmeet.http.db.member.Address;
 import org.petmeet.http.db.member.MemberEntity;

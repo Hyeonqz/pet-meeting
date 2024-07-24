@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -21,7 +22,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "login")
 @Entity
 public class LoginEntity {
@@ -29,7 +29,10 @@ public class LoginEntity {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String username;
+
+	@Column(nullable = false)
 	private String password;
 
 	@OneToOne(fetch = FetchType.LAZY)

@@ -2,6 +2,7 @@ package org.petmeet.http.api.domain.jwt.filter;
 
 import java.io.IOException;
 
+import org.petmeet.http.api.domain.jwt.service.RedisService;
 import org.petmeet.http.db.jwt.RefreshRepository;
 import org.petmeet.http.api.domain.jwt.service.JwtUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -21,7 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CustomLogoutFilter extends GenericFilterBean {
 	private final JwtUtils jwtUtils;
-	private final RefreshRepository refreshRepository;
+	private final RedisService redisService;
+	//private final RefreshRepository refreshRepository;
 
 	@Override
 	public void doFilter (ServletRequest servletRequest, ServletResponse servletResponse,
@@ -72,15 +74,17 @@ public class CustomLogoutFilter extends GenericFilterBean {
 			return ;
 		}
 
-		Boolean isExist = refreshRepository.existsByRefreshToken(refreshToken);
-		if (!isExist) {
+		// DB 에 저장되어 있는지 확인
+		// TODO: 여기서 에러가 발생
+		boolean isExist = redisService.existsByRefreshToken(refreshToken);
+
+		if (isExist) {
 			//response status code
 			log.info("이미 로그아웃이 되었습니다.");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-
-		refreshRepository.deleteByRefreshToken(refreshToken);
+		redisService.deleteRefreshToken(refreshToken);
 
 		//Refresh 토큰 Cookie 값 null 로 설정
 		Cookie cookie = new Cookie("Refresh_Token", null);

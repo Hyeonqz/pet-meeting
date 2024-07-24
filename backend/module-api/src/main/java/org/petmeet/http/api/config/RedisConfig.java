@@ -1,18 +1,34 @@
 package org.petmeet.http.api.config;
 
 import org.petmeet.http.db.jwt.RefreshToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
 
+	@Value("${spring.data.redis.host}")
+	private String host;
+
+	@Value("${spring.data.redis.port}")
+	private int port;
+
 	@Bean
-	public RedisTemplate<String, RefreshToken> getRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-		RedisTemplate<String, RefreshToken> redisTemplate = new RedisTemplate<>();
+	public RedisConnectionFactory redisConnectionFactory() {
+		return new LettuceConnectionFactory(host,port);
+	}
+
+	// restTemplate 이랑 비슷
+	@Bean
+	public RedisTemplate<String, Object> getRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory);
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		return redisTemplate;
 	}
 

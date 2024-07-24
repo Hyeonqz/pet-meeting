@@ -3,6 +3,7 @@ package org.petmeet.http.api.domain.jwt.filter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.petmeet.http.api.domain.member.application.dto.req.MemberDTO;
 import org.petmeet.http.db.login.LoginEntity;
 import org.petmeet.http.db.member.MemberEntity;
 import org.petmeet.http.db.member.Role;
@@ -29,53 +30,45 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		// 헤더에서 access키에 담긴 토큰을 꺼냄
+
 		String accessToken = request.getHeader("Access_Token");
 
-		// 토큰이 없다면 다음 필터로 넘김
 		if (accessToken == null) {
 			filterChain.doFilter(request, response); // 다음 필터로 넘긴다.
 			return ;
 		}
 
-		// 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
 		try {
 			jwtUtils.isTokenExpired(accessToken);
 		} catch (ExpiredJwtException e) {
 
-			//response body
 			PrintWriter writer = response.getWriter();
-			writer.print("Access token expired");
+			writer.print("Access token is expired");
 
-			//response status code
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return ;
 		}
 
-		// 토큰이 Access_Token 인지 확인 (발급시 페이로드에 명시)
+		// 토큰이 access 인지 refresh 인지
 		String category = jwtUtils.getCategory(accessToken);
 
 		if (!category.equals("Access_Token")) {
 
-			//response body
 			PrintWriter writer = response.getWriter();
 			writer.print("invalid Access_Token");
 
-			//response status code
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
-		// username, role 값을 획득
 		String username = jwtUtils.getUsername(accessToken);
 		String role = jwtUtils.getRole(accessToken);
 
-		// TODO : Login 객체, User 객체 가져오기.
 		LoginEntity login = new LoginEntity(username,"password");
-		// TODO: 오류 예상?
 		MemberEntity member = new MemberEntity(Role.USER, login);
+		MemberDTO memberDTO = MemberDTO.from(member);
 
-		CustomUserDetails customUserDetails = new CustomUserDetails(member);
+		CustomUserDetails customUserDetails = new CustomUserDetails(login,memberDTO);
 
 		Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authToken);

@@ -1,9 +1,12 @@
 package org.petmeet.http.api.domain.jwt.filter;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.petmeet.http.api.domain.login.application.dto.LoginDTO;
 import org.petmeet.http.db.jwt.RefreshToken;
 import org.petmeet.http.db.jwt.RefreshRepository;
 import org.petmeet.http.api.domain.jwt.service.CustomUserDetails;
@@ -15,8 +18,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StreamUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,26 +37,28 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	private final RefreshRepository refreshRepository;
 
 	@Override
-	protected String obtainUsername(HttpServletRequest request) {
-		String username = request.getParameter("username");
-		log.info("Username from request: {}", username);
-		return (username != null) ? username.trim() : "";
-	}
-
-	@Override
-	protected String obtainPassword(HttpServletRequest request) {
-		String password = request.getParameter("password");
-		log.info("Password from request: {}", password);
-		return (password != null) ? password : "";
-	}
-
-	// 여기서 만든 filter 들은 SecurityConfig 에 등록을 해줘야 한다.
-	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws
 		AuthenticationException {
 
-		String username = this.obtainUsername(request);
-		String password = this.obtainPassword(request);
+		LoginDTO loginDTO = new LoginDTO();
+
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			ServletInputStream inputStream = request.getInputStream();
+			String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+			loginDTO = objectMapper.readValue(messageBody, LoginDTO.class);
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		System.out.println(loginDTO.getUsername());
+
+		String username = loginDTO.getUsername();
+		String password = loginDTO.getPassword();
+
+		log.info("username: {}", username);
+		log.info("password: {}", password);
 
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
@@ -73,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		String refreshToken = jwtUtils.createToken("Refresh_Token",username,role,86400000L);
 
 		// refresh Token 저장
-		addRefreshTokenEntity(username,refreshToken, 86400000L);
+		addRefreshTokenEntity(refreshToken,username, 86400000L);
 
 		// HTTP 인증 방식은 RFC7235 정의에 따라 아래 인증 헤더 형태를 가져야 한다.
 		response.addHeader("Authorization", "Bearer " + accessToken);
@@ -81,7 +90,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		response.addCookie(jwtUtils.createCookie("Refresh_Token",refreshToken));
 		response.setStatus(HttpStatus.OK.value());
 
-		log.info("[Authorization Access_Token] : [{}]", accessToken);
+		log.info("[Authorization] : Bearer {}", accessToken);
 		log.info("[Authorization Refresh_Token] : [{}]", refreshToken);
 
 		log.info("Success Login");
@@ -94,12 +103,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		log.info("Unsuccessful Login");
 	}
 
-	// Refresh_Token DB 에 저장
-	private void addRefreshTokenEntity(String username, String refresh, Long expiredMs) {
+	private void addRefreshTokenEntity(String refresh, String username, Long expiredMs) {
 		Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-		RefreshToken refreshEntity = new RefreshToken(username,refresh,date);
-
+		RefreshToken refreshEntity = RefreshToken.builder()
+			.refreshToken(refresh)
+			.username(username)
+			.expiredAt(expiredMs.toString())
+			.build();
 		refreshRepository.save(refreshEntity);
 	}
 }

@@ -1,9 +1,13 @@
 package org.petmeet.http.db.member;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.petmeet.http.db.login.LoginEntity;
+import org.petmeet.http.db.pets.Pet;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -12,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -29,7 +34,6 @@ import lombok.NoArgsConstructor;
 public class MemberEntity {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="member_id")
 	private Long id;
 
 	@Column(nullable = false)
@@ -55,6 +59,9 @@ public class MemberEntity {
 
 	@OneToOne(mappedBy = "member")
 	private LoginEntity login;
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Pet> pet = new ArrayList<>();
 
 	private LocalDateTime createdAt;
 

@@ -42,8 +42,8 @@ public class LoggerFilter implements Filter{
 		});
 
 		var requestBody = new String(request.getContentAsByteArray());
-		log.info("[RequestURI} : [{}]", uri);
-		log.info("[RequestBody] : \n[{}]", requestBody);
+		log.info("[RequestURI] : [{}]", uri);
+		log.info("[RequestBody] : [{}]", requestBody);
 
 		// Response
 		StringBuilder responseSb = new StringBuilder();
@@ -54,7 +54,7 @@ public class LoggerFilter implements Filter{
 		});
 
 		var responseBody = new String(response.getContentAsByteArray());
-		log.info("[ResponseBody] : \n[{}]", responseBody);
+		log.info("[ResponseBody] : [{}]", responseBody);
 
 		// 사용안할시 responseBody 비워져서 나옴.
 		response.copyBodyToResponse();
