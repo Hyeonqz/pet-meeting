@@ -2,12 +2,15 @@ package org.petmeet.http.api.domain.jwt.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.petmeet.http.api.domain.member.application.dto.req.MemberDTO;
 import org.petmeet.http.db.login.LoginEntity;
 import org.petmeet.http.db.member.MemberEntity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,18 +19,20 @@ public class CustomUserDetails implements UserDetails {
 	private final LoginEntity login;
 	private final MemberDTO memberDTO;
 
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities () {
 		Collection<GrantedAuthority> collection = new ArrayList<>();
 
-		collection.add(new GrantedAuthority() {
+		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+"USER"));
+/*		collection.add(new GrantedAuthority() {
 			@Override
 			public String getAuthority () {
 				return memberDTO.getRole().getCode();
 			}
-		});
+		});*/
 
-		return collection;
+		//return collection;
 	}
 
 	@Override

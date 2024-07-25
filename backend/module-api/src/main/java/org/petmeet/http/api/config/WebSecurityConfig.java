@@ -2,6 +2,8 @@ package org.petmeet.http.api.config;
 
 import java.util.Collections;
 
+import org.petmeet.http.api.domain.jwt.filter.JwtPetAuthenticationFilter;
+import org.petmeet.http.api.domain.jwt.service.RedisService;
 import org.petmeet.http.db.jwt.RefreshRepository;
 import org.petmeet.http.api.domain.jwt.filter.CustomLogoutFilter;
 import org.petmeet.http.api.domain.jwt.filter.JwtFilter;
@@ -33,20 +35,23 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSecurityConfig {
 	private final AuthenticationConfiguration configuration;
 	private final JwtUtils jwtUtils;
+	private final RedisService redisService;
 	private final RefreshRepository refreshRepository;
+	private final JwtPetAuthenticationFilter jwtPetAuthenticationFilter;
 
 	@Bean
 	protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
+			.csrf(AbstractHttpConfigurer::disable)
+
 			.authorizeHttpRequests((auth) -> auth
 				.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-				.requestMatchers("/api/v1/**", "/").permitAll()
+				.requestMatchers("/api/v1/**", "/", "/api/v1/refresh").permitAll()
+				.requestMatchers("/api/pet/**").hasRole("USER")
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)
-
-			.csrf(AbstractHttpConfigurer::disable)
 
 			.cors((cors) -> cors
 			.configurationSource(new CorsConfigurationSource() {
@@ -71,8 +76,9 @@ public class WebSecurityConfig {
 			.addFilterAt(
 				new LoginFilter(authenticationManager(configuration), jwtUtils, refreshRepository),
 				UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(new CustomLogoutFilter(jwtUtils, redisService), LogoutFilter.class) // 로그아웃 필터 전에 다 등록을 하겠다는 뜻
 
-			.addFilterBefore(new CustomLogoutFilter(jwtUtils, refreshRepository), LogoutFilter.class) // 로그아웃 필터 전에 다 등록을 하겠다는 뜻
+			.addFilterBefore(jwtPetAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
 			.sessionManagement((session) -> session
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

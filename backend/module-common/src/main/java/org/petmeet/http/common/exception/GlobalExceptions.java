@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Order(value = Integer.MAX_VALUE)
 public class GlobalExceptions {
 
-	@ExceptionHandler
+/*	@ExceptionHandler
 	public ResponseEntity<?> GlobalExceptionHandler(Exception ex, WebRequest request) {
 		log.error("[Error Response] : {}", ex.getMessage());
 		log.error("[Error Where?] : {}", (Object)ex.getStackTrace());
@@ -24,5 +24,5 @@ public class GlobalExceptions {
 
 		//TODO: 뭘 리턴 시킬지 고민좀 해보자
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}
+	}*/
 }
