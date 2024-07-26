@@ -13,9 +13,12 @@ import org.petmeet.http.db.member.MemberEntity;
 import org.petmeet.http.db.member.MemberRepository;
 import org.petmeet.http.db.pets.Pet;
 import org.petmeet.http.db.pets.PetRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +35,65 @@ public class PetService {
 
 	@Transactional
 	public PetRegisterResponse registerPet(PetRequestDTO.PetRegisterRequest request) {
+		return getPetRegisterResponse(request);
+	}
+
+	@Transactional
+	public PetRegisterResponse updatePet(PetRequestDTO.PetRegisterRequest request, Long id) {
+		return getPetUpdateResponse(request,id);
+	}
+
+	@Transactional
+	public void deletePet(Long id) {
+		petRepository.deleteById(id);
+	}
+
+	private PetRegisterResponse getPetUpdateResponse (PetRequestDTO.PetRegisterRequest request, Long id) {
+		if(id == null)
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다");
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		LoginEntity login = loginRepository.findByUsername(username)
+			.orElseThrow(() -> new RuntimeException("User not found"));
+
+		log.info("Member Id : {}" , login.getMember().getId());
+
+		// pet 이긴 pet 인데 Pet 에 있는 member_id 가 member 랑 같은 Id 를 찾아야 한다.
+		// 한 User 에게 등록된 pet 이 여러개 이기 때문에 pet_id 를 받아야 한다.
+		// 지금은 pet_id 를 찾는데 member_id 를 찾아야 한다.
+
+		Pet pet = petRepository.getReferenceById(id);
+		if(pet == null)
+			throw new RuntimeException("Pet Id 랑 Matching 되는 Pet 이 없다");
+
+		pet.updatePeopleAge();
+
+		pet.onUpdate(
+			request.getName(),
+			request.getAge(),
+			request.getGender(),
+			request.getBreed(),
+			request.isNeutered(),
+			request.getBirth()
+		);
+
+		petRepository.save(pet);
+
+		return PetRegisterResponse.builder()
+			.neutered(request.isNeutered())
+			.gender(pet.getGender())
+			.name(request.getName())
+			.breed(request.getBreed())
+			.birth(request.getBirth())
+			.age(request.getAge())
+			.peopleAge(pet.updatePeopleAge())
+			.build();
+	}
+
+	private PetRegisterResponse getPetRegisterResponse (PetRequestDTO.PetRegisterRequest request) {
 		Pet pet = PetRequestDTO.PetRegisterRequest.toEntity(request);
 		pet.getPeopleAge();
 
-		// 방법1
-		// 현재 로그인된 발급 된 토큰에서 Username 값만 뽑아 온다.
-		// 쿼리를 만들어 username 에 해당하는 Member 객체를 가져온다.
-		// Member 에서 Id 값을 뽑아서 Pet 등록할 때 같이 등록 시킨다.
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		log.info("UserId : {}" , username); // ID 가져옴
 
@@ -47,7 +102,7 @@ public class PetService {
 			throw new RuntimeException("Login not found");
 		}
 
-		MemberEntity member = memberRepository.getReferenceById(login.getId());
+		MemberEntity member = memberRepository.getReferenceById(login.getMember().getId());
 
 		petRepository.save(Pet.builder()
 			.birth(request.getBirth())
@@ -55,7 +110,6 @@ public class PetService {
 			.gender(pet.getGender())
 			.name(request.getName())
 			.breed(request.getBreed())
-			.birth(request.getBirth())
 			.age(request.getAge())
 			.member(member)
 			.build()

@@ -70,5 +70,16 @@ public class Pet {
 		this.peopleAge = this.age * 7;
 	}
 
+	public Integer updatePeopleAge() {
+		return this.peopleAge = this.age * 7;
+	}
 
+	public void onUpdate (String name, Integer age, String gender, String breed, boolean neutered, String birth) {
+		this.name = name;
+		this.age =age;
+		this.gender = gender;
+		this.breed = breed;
+		this.neutered = neutered;
+		this.birth =birth;
+	}
 }
