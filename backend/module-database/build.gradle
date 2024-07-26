@@ -1,13 +1,5 @@
-/*plugins {
-    id 'java'
-}*/
-
 group = 'org.petmeet'
 version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = '21'
-}
 
 bootJar {
     enabled = false
@@ -15,10 +7,6 @@ bootJar {
 
 jar {
     enabled = true
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {

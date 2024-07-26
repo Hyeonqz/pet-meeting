@@ -4,11 +4,13 @@ server:
 spring:
   jpa:
     show-sql: true
+    generate-ddl: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+
 
   datasource:
     url: jdbc:mysql://localhost:3306/pet?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
@@ -20,7 +22,14 @@ spring:
     secret:
       key: aWmOUeJL6T/E6GuAIqZTpEnStxIbc2nOH0BSusakjdhiuqgwdubkjvaabkjabskbkaEZgVbw= # 다시 설정하기
 
+#  cache:
+#    type: redis
+
   data:
     redis:
       host: localhost
       port: 6379
+
+#logging:
+#  level:
+#    io.lettuce.core: debug
