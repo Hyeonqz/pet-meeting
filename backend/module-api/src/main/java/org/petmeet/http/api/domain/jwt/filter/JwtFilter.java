@@ -65,6 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		String role = jwtUtils.getRole(accessToken);
 
 		LoginEntity login = new LoginEntity(username,"password");
+		login.onUpdate();
 		MemberEntity member = new MemberEntity(Role.USER, login);
 		MemberDTO memberDTO = MemberDTO.from(member);
 

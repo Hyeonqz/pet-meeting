@@ -1,31 +1,53 @@
 package org.petmeet.http.api.domain.member.ui;
 
+import java.util.List;
 import java.util.Map;
 
-import org.petmeet.http.api.domain.login.application.dto.LoginDTO;
+import org.petmeet.http.api.domain.member.application.dto.req.MemberRegisterRequest;
+import org.petmeet.http.api.domain.member.application.dto.req.MemberUpdateRequest;
+import org.petmeet.http.api.domain.member.application.dto.res.MemberRegisterResponse;
+import org.petmeet.http.api.domain.member.application.dto.res.MemberUpdateResponse;
+import org.petmeet.http.api.domain.member.application.service.MemberService;
+import org.petmeet.http.api.domain.pets.application.dto.dtos.PetDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
-@RequestMapping("/apis/member")
 @RestController
 public class MemberController {
+	private final MemberService memberService;
 
-	// 위 방식으로도 개발을 많이 함.
-	@GetMapping
-	public ResponseEntity<?> get1(HttpServletRequest request, @RequestBody LoginDTO loginDTO) {
-		return ResponseEntity.ok(Map.of(
-			"status","success"
-			)
-		);
+	@PostMapping("/register")
+	public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
+		MemberRegisterResponse response = memberService.register(request);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/update")
+	public ResponseEntity<MemberUpdateResponse> update(@RequestBody MemberUpdateRequest request) {
+		MemberUpdateResponse memberUpdateResponse = memberService.memberUpdate(request);
+		return ResponseEntity.ok(memberUpdateResponse);
+	}
+
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> delete(@PathVariable  Long id) {
+		memberService.memberDelete(id);
+		return ResponseEntity.ok(Map.of("Status", "Success"));
+	}
+
+	@GetMapping("/petList/{id}")
+	public ResponseEntity<?> getPetsList(@PathVariable Long id) {
+		List<PetDTO.PetListDTO> petList = memberService.getPetList(id);
+		return ResponseEntity.ok(petList);
 	}
 
 }

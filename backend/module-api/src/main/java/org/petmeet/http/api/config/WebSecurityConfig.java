@@ -9,6 +9,7 @@ import org.petmeet.http.api.domain.jwt.filter.CustomLogoutFilter;
 import org.petmeet.http.api.domain.jwt.filter.JwtFilter;
 import org.petmeet.http.api.domain.jwt.filter.LoginFilter;
 import org.petmeet.http.api.domain.jwt.service.JwtUtils;
+import org.petmeet.http.db.login.LoginRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,8 +48,14 @@ public class WebSecurityConfig {
 
 			.authorizeHttpRequests((auth) -> auth
 				.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-				.requestMatchers("/api/v1/**", "/", "/api/v1/refresh").permitAll()
+
+				.requestMatchers("/api/member/register", "/").permitAll()
+				.requestMatchers("/api/member/**").hasRole("USER")
+
+				.requestMatchers("/api/v1/refresh").hasRole("USER")
+
 				.requestMatchers("/api/pet/**").hasRole("USER")
+
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)

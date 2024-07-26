@@ -1,25 +1,20 @@
 package org.petmeet.http.api.domain.member.application.dto.req;
 
+import org.petmeet.http.api.domain.login.application.dto.LoginDTO;
 import org.petmeet.http.db.member.Address;
 import org.petmeet.http.db.member.MemberEntity;
-import org.petmeet.http.api.domain.login.application.dto.LoginDTO;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor @NoArgsConstructor
 @Getter
-public class MemberRegisterRequest {
-
+public class MemberUpdateRequest {
 	private String name;
 	private Address address;
 	private String email;
 	private String phoneNumber;
 	private String gender;
-	private LoginDTO login;
 
-	public static MemberEntity toEntity(MemberRegisterRequest request) {
+	public MemberEntity toEntity(MemberUpdateRequest request) {
 		return MemberEntity.builder()
 			.address(request.getAddress())
 			.email(request.getEmail())
@@ -28,7 +23,5 @@ public class MemberRegisterRequest {
 			.phoneNumber(request.getPhoneNumber())
 			.build();
 	}
-
-
 
 }

@@ -76,4 +76,8 @@ public class LoginEntity {
 		lastLoginTime = LocalDateTime.now();
 	}
 
+	public void onUpdate() {
+		this.lastUpdateTime = LocalDateTime.now();
+	}
+
 }

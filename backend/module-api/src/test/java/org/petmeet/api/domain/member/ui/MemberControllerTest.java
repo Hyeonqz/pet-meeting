@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.petmeet.http.api.domain.member.application.service.MemberRegisterService;
+import org.petmeet.http.api.domain.member.application.service.MemberService;
 import org.petmeet.http.db.login.LoginEntity;
 import org.petmeet.http.db.member.Address;
 import org.petmeet.http.db.member.MemberEntity;
@@ -13,12 +13,12 @@ import org.petmeet.http.db.member.MemberRepository;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MemberRegisterControllerTest {
-	private final MemberRegisterService memberRegisterService;
+class MemberControllerTest {
+	private final MemberService memberService;
 	private final MemberRepository memberRepository;
 
-	MemberRegisterControllerTest (MemberRegisterService memberRegisterService, MemberRepository memberRepository) {
-		this.memberRegisterService = memberRegisterService;
+	MemberControllerTest (MemberService memberService, MemberRepository memberRepository) {
+		this.memberService = memberService;
 		this.memberRepository = memberRepository;
 	}
 

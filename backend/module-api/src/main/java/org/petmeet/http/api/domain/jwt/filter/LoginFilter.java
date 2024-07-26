@@ -11,6 +11,8 @@ import org.petmeet.http.db.jwt.RefreshToken;
 import org.petmeet.http.db.jwt.RefreshRepository;
 import org.petmeet.http.api.domain.jwt.service.CustomUserDetails;
 import org.petmeet.http.api.domain.jwt.service.JwtUtils;
+import org.petmeet.http.db.login.LoginEntity;
+import org.petmeet.http.db.login.LoginRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,8 +53,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
-		System.out.println(loginDTO.getUsername());
 
 		String username = loginDTO.getUsername();
 		String password = loginDTO.getPassword();

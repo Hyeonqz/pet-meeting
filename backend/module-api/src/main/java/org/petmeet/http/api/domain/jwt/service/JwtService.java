@@ -68,8 +68,7 @@ public class JwtService {
 		String newAccessToken = jwtUtils.createToken("Access_Token",username,role,600000L);
 		String newRefreshToken = jwtUtils.createToken("Refresh_Token",username,role,86400000L); //24시간
 
-		// 이 메소드가 안도는 듯?
-		// TODO: TODO: 리프레쉬 토큰 재 발급시 redis 기존 토큰 삭제하기
+		// TODO: 리프레쉬 토큰 재 발급시 redis 기존 토큰 삭제하기
 		refreshRepository.deleteByRefreshToken(refresh_token); // 기존 refreshToken 삭제
 		log.info("Refresh Token is Delete ? : {}", refresh_token);
 		addNewRefreshToken(newRefreshToken, username, 86400000L);

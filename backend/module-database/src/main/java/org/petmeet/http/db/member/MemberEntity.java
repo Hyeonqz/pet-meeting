@@ -77,8 +77,16 @@ public class MemberEntity {
 		this.login = login;
 	}
 
-
 	public void setRole() {
 		this.role = Role.USER;
 	}
+
+	public void onUpdate(String name, Address address, String email, String phoneNumber, String gender) {
+		this.name = name;
+		this.address = address;
+		this.email = email;
+		this.phoneNumber =phoneNumber;
+		this.gender = gender;
+	}
+
 }
