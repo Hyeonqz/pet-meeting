@@ -2,6 +2,8 @@ package org.petmeet.http.db.pets;
 
 import java.util.List;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -9,6 +11,22 @@ public class PetRepositoryImpl implements PetRepositoryCustom{
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	private final JPAQueryFactory jpaQueryFactory;
+
+	public PetRepositoryImpl (JPAQueryFactory jpaQueryFactory) {
+		this.jpaQueryFactory = jpaQueryFactory;
+	}
+
+/*	@Override
+	public List<Pet> searchByKeyword (String keyword) {
+		return jpaQueryFactory
+			.selectFrom()
+			.where()
+			.and()
+			.fetch()
+		return List.of();
+	}*/
 
 	@Override
 	public List<Pet> searchByKeyword(String keyword) {
@@ -20,5 +38,6 @@ public class PetRepositoryImpl implements PetRepositoryCustom{
 			.setParameter("keyword", "%" + keyword + "%")
 			.getResultList();
 	}
+
 
 }
