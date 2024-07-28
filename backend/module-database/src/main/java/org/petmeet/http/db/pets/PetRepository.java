@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface PetRepository extends JpaRepository<Pet, Long> {
+public interface PetRepository extends JpaRepository<Pet, Long>, PetRepositoryCustom {
+
 	Optional<Pet> findByName(String name);
 	Optional<Pet> findByMemberId(Long id);
 	void deleteByMember(MemberEntity member);
 
 	@Query("SELECT p FROM Pet p WHERE p.member.id = :memberId")
 	List<Pet> findAllByMemberId(@Param("memberId") Long memberId);
+
+
 }

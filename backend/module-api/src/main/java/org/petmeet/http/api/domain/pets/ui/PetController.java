@@ -76,4 +76,12 @@ public class PetController {
 		));
 	}
 
+	@GetMapping("/search/{keyword}")
+	public ResponseEntity<?> searchPets(@PathVariable String keyword) {
+		List<PetDTO.PetListDTO> searchResult = petService.getSearchResult(keyword);
+		return ResponseEntity.ok(searchResult);
+	}
+
+
+
 }

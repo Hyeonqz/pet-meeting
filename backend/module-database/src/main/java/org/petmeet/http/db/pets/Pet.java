@@ -1,5 +1,7 @@
 package org.petmeet.http.db.pets;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.Comment;
@@ -25,7 +27,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Pet {
+public class Pet implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 1L;
+
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="pet_id")
 	private Long id;

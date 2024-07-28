@@ -1,8 +1,12 @@
 package org.petmeet.http.api.domain.pets.application.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.petmeet.http.api.domain.jwt.service.CustomUserDetails;
+import org.petmeet.http.api.domain.pets.application.dto.dtos.PetDTO;
 import org.petmeet.http.api.domain.pets.application.dto.request.PetRequestDTO;
 import org.petmeet.http.api.domain.pets.application.dto.response.PetRegisterResponse;
 import org.petmeet.http.common.error.ErrorCode;
@@ -46,6 +50,37 @@ public class PetService {
 	@Transactional
 	public void deletePet(Long id) {
 		petRepository.deleteById(id);
+	}
+
+	// 카테고리 별 필터링
+	public List<PetDTO.PetListDTO> getCategoryList(String category) {
+		// 1) 카테고리 별 반환이니, 반환은 Pet dto List 를 반환함.
+		// 2) api 호출을 할 때
+		return new ArrayList<>();
+	}
+
+	// 추후 통합 검색시 column 을 전체를 사용하지 않고, name, breed 컬럼에서만 조회하게끔 하자.
+	// + 한글자만 맞아도 검색되게 할까? 고민중인데
+	// 어떻게 검색 로직을 짜야할까나
+	/**
+	 * 전체 검색
+	 * */
+	public List<PetDTO.PetListDTO> getSearchResult(String searchWord) {
+
+		List<Pet> petList = petRepository.searchByKeyword(searchWord); //pet 반환
+
+		return petList.stream()
+			.map(pet -> new PetDTO.PetListDTO(
+				pet.getName(),
+				pet.getGender(),
+				pet.getAge(),
+				pet.isNeutered(),
+				pet.getBirth(),
+				pet.getBreed(),
+				pet.getPeopleAge(),
+				pet.getCreatedAt()))
+			.toList();
+
 	}
 
 	private PetRegisterResponse getPetUpdateResponse (PetRequestDTO.PetRegisterRequest request, Long id) {
